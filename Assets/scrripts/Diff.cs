@@ -9,7 +9,6 @@ public class Diff : MonoBehaviour
     checkTouch VCheckTouch;
     checkTouch HCheckTouch;
 
-
     private Rigidbody rb;
 
     [SerializeField] private GameObject VLarvfot;
@@ -22,21 +21,24 @@ public class Diff : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         float leftTrackInput = Input.GetAxis("LeftTrack");
         float rightTrackInput = Input.GetAxis("RightTrack");
 
+        Vector3 leftForce = transform.forward * movementForce * leftTrackInput;
+        Vector3 rightForce = transform.forward * movementForce * rightTrackInput;
 
-        Vector3 leftForce = transform.forward * movementForce * leftTrackInput * Time.deltaTime;
-        Vector3 rightForce = transform.forward * movementForce * rightTrackInput * Time.deltaTime;
+        Debug.Log(rb.angularVelocity);
         if (VCheckTouch.canDrive == true)
         {
-            rb.AddForceAtPosition(leftForce, VLarvfot.transform.position);
+            // Set velocity instead of adding force
+            rb.velocity += leftForce * Time.fixedDeltaTime;
         }
         if (HCheckTouch.canDrive == true)
         {
-            rb.AddForceAtPosition(rightForce, HLarvfot.transform.position);
+            // Set velocity instead of adding force
+            rb.velocity += rightForce * Time.fixedDeltaTime;
         }
 
         if (rb.velocity.magnitude > maxVelocity)
@@ -48,7 +50,10 @@ public class Diff : MonoBehaviour
         {
             rb.angularVelocity = rb.angularVelocity.normalized * maxRotationSpeed;
         }
+
+        if (rb.angularVelocity.y > 0)
+        {
+            rb.angularVelocity = new Vector3(0, rb.angularVelocity.y, 0);
+        }
     }
-
-
 }
