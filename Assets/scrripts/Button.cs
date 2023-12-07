@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DiffSim : MonoBehaviour
+public class Button : MonoBehaviour
 {
     [SerializeField] private float movementForce = 10f;
     [SerializeField] private float maxVelocity = 5f;
@@ -18,6 +18,9 @@ public class DiffSim : MonoBehaviour
     [SerializeField] private GameObject VLarvfot;
     [SerializeField] private GameObject HLarvfot;
 
+    private bool leftDriving = false;
+    private bool rightDriving = false;
+
     void Start()
     {
         VCheckTouch = VLarvfot.GetComponent<checkTouch>();
@@ -25,10 +28,47 @@ public class DiffSim : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            if (leftDriving)
+            {
+                leftDriving = false;
+            }
+            else
+            {
+                leftDriving = true;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (rightDriving)
+            {
+                rightDriving = false;
+            }
+            else
+            {
+                rightDriving = true;
+            }
+        }
+    }
+
     void FixedUpdate()
     {
-        float leftTrackInput = Input.GetAxis("LeftTrack");
-        float rightTrackInput = Input.GetAxis("RightTrack");
+
+
+        float leftTrackInput = 0;
+        if (leftDriving)
+        {
+            leftTrackInput = 1;
+        }
+        float rightTrackInput = 0;
+        if (rightDriving)
+        {
+            rightTrackInput = 1;
+        }
 
         Vector3 leftForce = new Vector3(0, 0, 0);
         Vector3 rightForce = new Vector3(0, 0, 0);
@@ -44,7 +84,8 @@ public class DiffSim : MonoBehaviour
         else if (leftTrackInput < -0.9 && VCheckTouch.canDrive && rightTrackInput > 0.9)
         {
             rb.angularVelocity = new Vector3(0, -0.016f * maxRotationSpeed, 0);
-        } else
+        }
+        else
         {
             turn = (leftTrackInput - rightTrackInput) * turnSpeed;
             rb.angularVelocity = new Vector3(0, turn, 0);

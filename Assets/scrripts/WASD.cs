@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
-public class Mus : MonoBehaviour
+public class WASD : MonoBehaviour
 {
-
     [SerializeField] private float movementForce = 10f;
     [SerializeField] private float maxVelocity = 5f;
-    [SerializeField] private float maxRotationSpeed = 1f;
+    [SerializeField] private float maxRotationSpeed = 90f;
     [SerializeField] private float turnSpeed = 1f;
 
-    private int num = 0;
+    [SerializeField] private bool turnRight = false;
 
     checkTouch VCheckTouch;
     checkTouch HCheckTouch;
@@ -19,9 +17,6 @@ public class Mus : MonoBehaviour
 
     [SerializeField] private GameObject VLarvfot;
     [SerializeField] private GameObject HLarvfot;
-
-    private float leftTrackInput = 0;
-    private float rightTrackInput = 0;
 
     void Start()
     {
@@ -32,40 +27,51 @@ public class Mus : MonoBehaviour
 
     void FixedUpdate()
     {
-        float mid = Screen.width / 2;
-        Vector3 mousePos = Input.mousePosition;
-        float mouseX = mousePos.x - mid;
+        float input = 0;
 
-        float turnInput = mouseX / mid;
-
-        int speedInput = 0;
-        if (Input.GetMouseButton(0) && Input.GetMouseButton(1))
+        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
         {
-            speedInput = 0;
-        } else if (Input.GetMouseButton(0))
+            input = 0;
+        } else if (Input.GetKey(KeyCode.W))
         {
-            speedInput = 1;
-        } else if (Input.GetMouseButton(1))
+            input = 1;
+        }
+        else if (Input.GetKey(KeyCode.S))
         {
-            speedInput = -1;
+            input = -1;
         }
 
-        int invert = 1; 
-        if (speedInput == -1)
+        float turnInput = 0f;
+
+        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D)) 
+        {
+            turnInput = 0;
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            turnInput = -1;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            turnInput = 1;
+        }
+
+        int invert = 1;
+        if (input == -1)
         {
             invert = -1;
         }
 
-        float extraRotation = 1f;
-        if (speedInput == 0)
+        float extraTurn = 1;
+        if (input == 0)
         {
-            extraRotation = 1.5f;
+            extraTurn = 1.5f;
         }
 
-        float turn = turnInput * turnSpeed * invert * extraRotation;
+        float turn = turnInput * turnSpeed * extraTurn * invert;
         rb.angularVelocity = new Vector3(0, turn, 0);
 
-        Vector3 force = transform.forward * movementForce * speedInput * 2;
+        Vector3 force = transform.forward * movementForce * input * 2;
 
         if (VCheckTouch.canDrive && HCheckTouch.canDrive)
         {
@@ -83,4 +89,3 @@ public class Mus : MonoBehaviour
         }
     }
 }
-

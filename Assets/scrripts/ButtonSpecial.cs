@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DiffSim : MonoBehaviour
+public class ButtonSpecial : MonoBehaviour
 {
     [SerializeField] private float movementForce = 10f;
     [SerializeField] private float maxVelocity = 5f;
@@ -18,6 +18,9 @@ public class DiffSim : MonoBehaviour
     [SerializeField] private GameObject VLarvfot;
     [SerializeField] private GameObject HLarvfot;
 
+    private int leftDriving = 0;
+    private int rightDriving = 0;
+
     void Start()
     {
         VCheckTouch = VLarvfot.GetComponent<checkTouch>();
@@ -25,10 +28,61 @@ public class DiffSim : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            if (leftDriving == 2)
+            {
+                leftDriving = 0;
+            }
+            else if (leftDriving == 0)
+            {
+                leftDriving = 1;
+            } else
+            {
+                leftDriving = 2;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (rightDriving == 2)
+            {
+                rightDriving = 0;
+            }
+            else if (rightDriving == 0)
+            {
+                rightDriving = 1;
+            }
+            else
+            {
+                rightDriving = 2;
+            }
+        }
+    }
+
     void FixedUpdate()
     {
-        float leftTrackInput = Input.GetAxis("LeftTrack");
-        float rightTrackInput = Input.GetAxis("RightTrack");
+
+
+        float leftTrackInput = 0;
+        if (leftDriving == 1)
+        {
+            leftTrackInput = 1;
+        } else if (leftDriving == 2)
+        {
+            leftTrackInput = -1;
+        }
+        float rightTrackInput = 0;
+        if (rightDriving == 1)
+        {
+            rightTrackInput = 1;
+        }
+        else if (rightDriving == 2)
+        {
+            rightTrackInput = -1;
+        }
 
         Vector3 leftForce = new Vector3(0, 0, 0);
         Vector3 rightForce = new Vector3(0, 0, 0);
@@ -44,7 +98,8 @@ public class DiffSim : MonoBehaviour
         else if (leftTrackInput < -0.9 && VCheckTouch.canDrive && rightTrackInput > 0.9)
         {
             rb.angularVelocity = new Vector3(0, -0.016f * maxRotationSpeed, 0);
-        } else
+        }
+        else
         {
             turn = (leftTrackInput - rightTrackInput) * turnSpeed;
             rb.angularVelocity = new Vector3(0, turn, 0);
