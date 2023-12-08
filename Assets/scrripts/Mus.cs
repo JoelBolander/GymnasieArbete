@@ -10,8 +10,6 @@ public class Mus : MonoBehaviour
     [SerializeField] private float maxRotationSpeed = 1f;
     [SerializeField] private float turnSpeed = 1f;
 
-    private int num = 0;
-
     checkTouch VCheckTouch;
     checkTouch HCheckTouch;
 
@@ -19,9 +17,6 @@ public class Mus : MonoBehaviour
 
     [SerializeField] private GameObject VLarvfot;
     [SerializeField] private GameObject HLarvfot;
-
-    private float leftTrackInput = 0;
-    private float rightTrackInput = 0;
 
     void Start()
     {

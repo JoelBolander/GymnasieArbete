@@ -9,8 +9,6 @@ public class TurnStickSpeedStick : MonoBehaviour
     [SerializeField] private float maxRotationSpeed = 90f;
     [SerializeField] private float turnSpeed = 1f;
 
-    [SerializeField] private bool turnRight = false;
-
     checkTouch VCheckTouch;
     checkTouch HCheckTouch;
 
