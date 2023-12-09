@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
-public class Diff : MonoBehaviour
+public class DiffSim : MonoBehaviour
 {
     [SerializeField] private float movementForce = 10f;
     [SerializeField] private float maxVelocity = 5f;
     [SerializeField] private float maxRotationSpeed = 90f;
+    [SerializeField] private float turnSpeed = 1f;
 
     checkTouch VCheckTouch;
     checkTouch HCheckTouch;
@@ -26,18 +28,36 @@ public class Diff : MonoBehaviour
         float leftTrackInput = Input.GetAxis("LeftTrack");
         float rightTrackInput = Input.GetAxis("RightTrack");
 
-        Vector3 leftForce = transform.forward * movementForce * leftTrackInput;
-        Vector3 rightForce = transform.forward * movementForce * rightTrackInput;
+        Vector3 leftForce = new Vector3(0, 0, 0);
+        Vector3 rightForce = new Vector3(0, 0, 0);
 
-        Debug.Log(rb.angularVelocity);
-        if (VCheckTouch.canDrive == true)
+        float turn = 0f;
+
+        int extra = 1;
+
+        if (leftTrackInput > 0.9 && VCheckTouch.canDrive && rightTrackInput < -0.9)
         {
-            // Set velocity instead of adding force
+            rb.angularVelocity = new Vector3(0, 0.016f * maxRotationSpeed, 0);
+        }
+        else if (leftTrackInput < -0.9 && VCheckTouch.canDrive && rightTrackInput > 0.9)
+        {
+            rb.angularVelocity = new Vector3(0, -0.016f * maxRotationSpeed, 0);
+        } else
+        {
+            turn = (leftTrackInput - rightTrackInput) * turnSpeed;
+            rb.angularVelocity = new Vector3(0, turn, 0);
+            extra = 3;
+        }
+
+        leftForce = transform.forward * movementForce * leftTrackInput * extra;
+        rightForce = transform.forward * movementForce * rightTrackInput * extra;
+
+        if (VCheckTouch.canDrive)
+        {
             rb.velocity += leftForce * Time.fixedDeltaTime;
         }
-        if (HCheckTouch.canDrive == true)
+        if (HCheckTouch.canDrive)
         {
-            // Set velocity instead of adding force
             rb.velocity += rightForce * Time.fixedDeltaTime;
         }
 
@@ -49,11 +69,6 @@ public class Diff : MonoBehaviour
         if (rb.angularVelocity.magnitude > maxRotationSpeed)
         {
             rb.angularVelocity = rb.angularVelocity.normalized * maxRotationSpeed;
-        }
-
-        if (rb.angularVelocity.y > 0)
-        {
-            rb.angularVelocity = new Vector3(0, rb.angularVelocity.y, 0);
         }
     }
 }

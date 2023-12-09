@@ -1,13 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.InputSystem;
 
-public class Mus : MonoBehaviour
+public class OneStick : MonoBehaviour
 {
-
     [SerializeField] private float movementForce = 10f;
     [SerializeField] private float maxVelocity = 5f;
-    [SerializeField] private float maxRotationSpeed = 1f;
+    [SerializeField] private float maxRotationSpeed = 90f;
     [SerializeField] private float turnSpeed = 1f;
 
     checkTouch VCheckTouch;
@@ -18,6 +17,27 @@ public class Mus : MonoBehaviour
     [SerializeField] private GameObject VLarvfot;
     [SerializeField] private GameObject HLarvfot;
 
+    NewControls controls;
+
+    Vector2 left;
+
+    private void Awake()
+    {
+        controls = new NewControls();
+
+        controls.Gameplay.LeftStick.performed += ctx => left = ctx.ReadValue<Vector2>();
+        controls.Gameplay.LeftStick.canceled += ctx => left = Vector2.zero;
+    }
+
+    private void OnEnable()
+    {
+        controls.Gameplay.Enable();
+    }
+    private void OnDisable()
+    {
+        controls.Gameplay.Disable();
+    }
+
     void Start()
     {
         VCheckTouch = VLarvfot.GetComponent<checkTouch>();
@@ -27,40 +47,29 @@ public class Mus : MonoBehaviour
 
     void FixedUpdate()
     {
-        float mid = Screen.width / 2;
-        Vector3 mousePos = Input.mousePosition;
-        float mouseX = mousePos.x - mid;
+        float input = left.y;
+        float turnInput = left.x;
 
-        float turnInput = mouseX / mid;
+        float turn = 0f;
 
-        int speedInput = 0;
-        if (Input.GetMouseButton(0) && Input.GetMouseButton(1))
+        float extraTurn = 1;
+        if (input == 0)
         {
-            speedInput = 0;
-        } else if (Input.GetMouseButton(0))
-        {
-            speedInput = 1;
-        } else if (Input.GetMouseButton(1))
-        {
-            speedInput = -1;
+            extraTurn = 1.5f;
         }
 
-        int invert = 1; 
-        if (speedInput == -1)
+        // HÄR ÄR ETT KANSKE BEROENDE PÅ VAD VI KOMMER FRAM TILL DU OCH JAG SAMUEL PUSS PUSS
+        int invert = 1;
+        if (input < -0.05)
         {
             invert = -1;
         }
 
-        float extraRotation = 1f;
-        if (speedInput == 0)
-        {
-            extraRotation = 1.5f;
-        }
-
-        float turn = turnInput * turnSpeed * invert * extraRotation;
+        turn = turnInput * turnSpeed * extraTurn * invert;
         rb.angularVelocity = new Vector3(0, turn, 0);
 
-        Vector3 force = transform.forward * movementForce * speedInput * 2;
+        int extraSpeed = 6;
+        Vector3 force = transform.forward * movementForce * input * extraSpeed;
 
         if (VCheckTouch.canDrive && HCheckTouch.canDrive)
         {
@@ -78,4 +87,3 @@ public class Mus : MonoBehaviour
         }
     }
 }
-
