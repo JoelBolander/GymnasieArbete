@@ -16,6 +16,12 @@ public class WASD : MonoBehaviour
     [SerializeField] private GameObject VLarvfot;
     [SerializeField] private GameObject HLarvfot;
 
+    float input = 0;
+    float turnInput = 0;
+    int invert = 1;
+    float extraTurn = 1;
+
+
     void Start()
     {
         VCheckTouch = VLarvfot.GetComponent<checkTouch>();
@@ -23,14 +29,15 @@ public class WASD : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    void FixedUpdate()
+    private void Update()
     {
-        float input = 0;
+        input = 0;
 
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
         {
             input = 0;
-        } else if (Input.GetKey(KeyCode.W))
+        }
+        else if (Input.GetKey(KeyCode.W))
         {
             input = 1;
         }
@@ -39,9 +46,9 @@ public class WASD : MonoBehaviour
             input = -1;
         }
 
-        float turnInput = 0f;
+        turnInput = 0f;
 
-        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D)) 
+        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
         {
             turnInput = 0;
         }
@@ -54,22 +61,29 @@ public class WASD : MonoBehaviour
             turnInput = 1;
         }
 
-        int invert = 1;
         if (input == -1)
         {
             invert = -1;
+        } else
+        {
+            invert = 1;
         }
 
-        float extraTurn = 1;
         if (input == 0)
         {
             extraTurn = 1.5f;
+        } else
+        {
+            extraTurn = 1;
         }
+    }
 
+    void FixedUpdate()
+    {
         float turn = turnInput * turnSpeed * extraTurn * invert;
         rb.angularVelocity = new Vector3(0, turn, 0);
 
-        Vector3 force = transform.forward * movementForce * input * 2;
+        Vector3 force = transform.forward * movementForce * input * 10000000;
 
         if (VCheckTouch.canDrive && HCheckTouch.canDrive)
         {
