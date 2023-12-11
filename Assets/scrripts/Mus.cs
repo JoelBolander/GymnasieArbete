@@ -33,6 +33,14 @@ public class Mus : MonoBehaviour
 
         float turnInput = mouseX / mid;
 
+        if (turnInput > 1)
+        {
+            turnInput = 1;
+        } else if (turnInput < -1)
+        {
+            turnInput = -1;
+        }
+
         int speedInput = 0;
         if (Input.GetMouseButton(0) && Input.GetMouseButton(1))
         {
