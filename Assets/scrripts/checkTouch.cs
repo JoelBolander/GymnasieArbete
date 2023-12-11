@@ -8,7 +8,6 @@ public class checkTouch : MonoBehaviour
     {
         if (collision.CompareTag("ground"))
         {
-            Debug.Log("can drive");
             canDrive = true;
         }
     }
@@ -17,7 +16,6 @@ public class checkTouch : MonoBehaviour
     {
         if (collision.CompareTag("ground"))
         {
-            Debug.Log("cannot drive");
             canDrive = false;
         }
     }
