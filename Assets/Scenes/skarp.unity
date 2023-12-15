@@ -261,6 +261,10 @@ PrefabInstance:
       propertyPath: goalTrigger
       value: 
       objectReference: {fileID: 1605691272}
+    - target: {fileID: 8955765747403958852, guid: 61598805b75c6a2459172714820e550e, type: 3}
+      propertyPath: sceneLoader
+      value: 
+      objectReference: {fileID: 287266731}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

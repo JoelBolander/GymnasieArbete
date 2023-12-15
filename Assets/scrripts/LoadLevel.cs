@@ -15,12 +15,12 @@ public class LoadLevel : MonoBehaviour
     [SerializeField] private string nextLevel;
     [SerializeField] private string currentLevel;
 
-    private float targetTime = 1f;
-    private float targetTime2 = 0.0f;
+    private float targetTime = 5f;
+    private float targetTime2 = 5f;
 
     private bool hasStarted = false;
     private bool finishedLevel = false;
-    private float runTimer = 0f;
+    public float runTimer = 0f;
 
     private bool alreadyRun = false;
 
@@ -48,6 +48,11 @@ public class LoadLevel : MonoBehaviour
         } else if (hasStarted && !finishedLevel)
         {
             runTimer += Time.deltaTime;
+            if (runTimer >= 90)
+            {
+                levelFinish();
+                runTimer = 90;
+            }
             float a = Mathf.FloorToInt(runTimer*10);
             runTimerDisplay.GetComponent<TextMeshProUGUI>().text = (a / 10).ToString();
         }
@@ -106,7 +111,7 @@ public class LoadLevel : MonoBehaviour
                         {
                             SceneManager.LoadSceneAsync("Scenes/" + nextLevel);
                         }
-                        else if (nextLevel == "slut" && systemsNotDone.Count >= 0)
+                        else if (nextLevel == "slut" && systemsNotDone.Count > 0)
                         {
                             PlayerPrefs.SetString("system", systemsNotDone[Mathf.FloorToInt(Random.Range(0, systemsNotDone.Count))]);
                             if (PlayerPrefs.GetString("system") == "WASD")
