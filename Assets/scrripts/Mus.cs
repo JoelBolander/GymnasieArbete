@@ -56,7 +56,7 @@ public class Mus : MonoBehaviour
         int invert = 1; 
         if (speedInput == -1)
         {
-            invert = -1;
+            invert = 1;
         }
 
         float extraRotation = 1f;

@@ -62,7 +62,7 @@ public class OneStick : MonoBehaviour
         int invert = 1;
         if (input < -0.05)
         {
-            invert = -1;
+            invert = 1;
         }
 
         turn = turnInput * turnSpeed * extraTurn * invert;

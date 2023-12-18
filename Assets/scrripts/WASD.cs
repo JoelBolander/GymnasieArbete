@@ -63,7 +63,7 @@ public class WASD : MonoBehaviour
 
         if (input == -1)
         {
-            invert = -1;
+            invert = 1;
         } else
         {
             invert = 1;
